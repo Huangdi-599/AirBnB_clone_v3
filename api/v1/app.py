@@ -10,10 +10,12 @@ from api.v1.views import app_views
 
 
 app = Flask(__name__)
-app.register_blueprint(app_views, url_prefix='/api/v1')
+'''The Flask web application instance.'''
+app.register_blueprint(app_views)
 
 @app.teardown_appcontext
 def close_storage(exception):
+    '''The Flask app/request context end event listener.'''
     storage.close()
 
 if __name__ == '__main__':
