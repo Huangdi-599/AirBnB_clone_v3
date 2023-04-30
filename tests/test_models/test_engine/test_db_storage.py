@@ -86,3 +86,44 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test for the get method"""
+        # create a new object
+        storage = models.storage
+        state = State(name="California")
+        # save changes to the database
+        state.save()
+        # get the object from the database by its class and ID
+        obj = storage.get(State, state.id)
+        # assert that the returned object is of the correct class
+        self.assertIsInstance(obj, State)
+        # assert that the returned object has the correct ID
+        self.assertEqual(state.id, state.id)
+        self.assertEqual(state.id, storage.get(State, state.id).id)
+        self.assertEqual(state.name, storage.get(State, state.id).name)
+        self.assertIsNot(state, storage.get(State, state.id + 'op'))
+        self.assertIsNone(storage.get(State, state.id + 'op'))
+        self.assertIsNone(storage.get(State, 45))
+        self.assertIsNone(storage.get(None, state.id))
+        self.assertIsNone(storage.get(int, state.id))
+        
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """Test the count method"""
+        storage = models.storage
+        # create two new objects
+        state1 = State(name="California")
+        state2 = State(name="Texas")
+        # save changes to the database
+        state1.save()
+        state2.save()
+        # get the count of objects for the State class
+        count = storage.count(State)
+        # assert that the count is 2
+        self.assertEqual(count, 2)
+        self.assertIs(type(storage.count()), int)
+        self.assertIs(type(storage.count(None)), int)
+        self.assertIs(type(storage.count(int)), int)
+        self.assertIs(type(storage.count(State)), int)
+        self.assertEqual(storage.count(), storage.count(None))
