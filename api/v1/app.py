@@ -1,8 +1,11 @@
 #!/usr/bin/python3
-'''Contains a Flask web application API.
+
 '''
+Contains a Flask web application API.
+'''
+
 import os
-from flask import Flask,jsonify
+from flask import Flask, jsonify
 from models import storage
 from api.v1.views import app_views
 
@@ -11,10 +14,12 @@ app = Flask(__name__)
 '''The Flask web application instance.'''
 app.register_blueprint(app_views)
 
+
 @app.teardown_appcontext
 def close_storage(exception):
     '''The Flask app/request context end event listener.'''
     storage.close()
+
 
 @app.errorhandler(404)
 def not_found(error):
